@@ -30,7 +30,6 @@ INTERVAL_SECONDS = int(os.getenv("INTERVAL_SECONDS", 3600))
 
 async def check_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMINS:
-        await update.effective_message.reply_text("Hey! You are not allowed to use me!")
         raise ApplicationHandlerStop  # stop other handlers
     if "chats" not in context.bot_data.keys():
         context.bot_data["chats"] = dict()
