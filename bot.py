@@ -21,8 +21,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-TOKEN = os.getenv("token")
-ADMINS = set(map(int, os.getenv("admins").split(",")))
+# Set these env properly!
+TOKEN = os.getenv("token", "")
+ADMINS = set(map(int, os.getenv("admins", "").split(",")))
 PERSISTENT_DIR = os.getenv("persistent_dir", "./")
 INTERVAL_SECONDS = os.getenv("interval_seconds", 3600)
 
