@@ -22,10 +22,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Set these env properly!
-TOKEN = os.getenv("token", "")
-ADMINS = set(map(int, os.getenv("admins", "").split(",")))
-PERSISTENT_DIR = os.getenv("persistent_dir", "./")
-INTERVAL_SECONDS = os.getenv("interval_seconds", 3600)
+TOKEN = os.getenv("TOKEN", "")
+ADMINS = set(map(int, os.getenv("ADMINS", "").split(",")))
+PERSISTENT_DIR = os.getenv("PERSISTENT_DIR", "./")
+INTERVAL_SECONDS = int(os.getenv("INTERVAL_SECONDS", 3600))
 
 
 async def check_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -99,9 +99,7 @@ if __name__ == "__main__":
         filepath=os.path.join(PERSISTENT_DIR, "sgprapp_bot_data")
     )
 
-    app = (
-        Application.builder().token(os.getenv("TOKEN")).persistence(persistence).build()
-    )
+    app = Application.builder().token(TOKEN).persistence(persistence).build()
     app.job_queue.run_repeating(
         publish_to_all, INTERVAL_SECONDS, 60
     )  # delay 60 seconds
