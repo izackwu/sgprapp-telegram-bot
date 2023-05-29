@@ -45,10 +45,10 @@ async def publish_to_all(context: ContextTypes.DEFAULT_TYPE):
         for type, entries in latest_sgprapp_records.items():
             if len(entries) == 0:
                 continue
-            last_id = last_publish.get(type, -1)
+            last_update = last_publish.get(type, 0)
             to_send: List[ApplicationRecord] = list()
             for entry in entries:
-                if entry.id == last_id:
+                if entry.last_update <= last_update:
                     break
                 to_send.append(entry)
             to_send.reverse()  # reverse it to make sure older entries are sent out first
@@ -57,7 +57,7 @@ async def publish_to_all(context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_message(
                     chat_id=chat_id, text=entry.formatted(), parse_mode=ParseMode.HTML
                 )
-                context.bot_data["chats"][chat_id][type] = entry.id
+                context.bot_data["chats"][chat_id][type] = entry.last_update
 
 
 async def add_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
