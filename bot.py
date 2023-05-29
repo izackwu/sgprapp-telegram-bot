@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import datetime, timedelta
 from typing import List
 from telegram import Update
 from telegram.ext import (
@@ -46,11 +47,15 @@ async def publish_to_all(context: ContextTypes.DEFAULT_TYPE):
             ApplicationType.Citizen: "http://sgprapp.com/citizen",
         }
     )
+    max_history = datetime.now() - timedelta(days=1)
     for chat_id, last_publish in chats.items():
         for type, entries in latest_sgprapp_records.items():
             if len(entries) == 0:
                 continue
-            last_update = last_publish.get(type, 0)
+            last_update = last_publish.get(type, max_history)
+            # This is for backward compatibility: previously we store the last item ID instead of last update time
+            if not isinstance(last_update, datetime):
+                last_update = max_history
             to_send: List[ApplicationRecord] = list()
             for entry in entries:
                 if entry.last_update <= last_update:
