@@ -12,7 +12,7 @@ from telegram.ext import (
 )
 from telegram.constants import ParseMode
 
-from sgprapp.model import ApplicationRecord
+from sgprapp.model import ApplicationRecord, ApplicationType
 from sgprapp.datasource import crawl
 
 
@@ -40,7 +40,12 @@ async def publish_to_all(context: ContextTypes.DEFAULT_TYPE):
     if len(chats) == 0:
         logger.info("Empty chats list, skip this publishing")
         return
-    latest_sgprapp_records = crawl()
+    latest_sgprapp_records = crawl(
+        urls={
+            ApplicationType.PR: "http://sgprapp.com/listPage",
+            ApplicationType.Citizen: "http://sgprapp.com/citizen",
+        }
+    )
     for chat_id, last_publish in chats.items():
         for type, entries in latest_sgprapp_records.items():
             if len(entries) == 0:
